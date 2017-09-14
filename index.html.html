@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        ul{
+            list-style: none;
+        }
+        #new_menu{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<button id="all">全选</button>
+<input type="text" id="text"/>
+<button id="add">增加</button>
+<button id="select">查看已选中</button>
+<button id="no_select">查看未选中</button>
+<ul id="data_menu"></ul>
+<ul id="new_menu"></ul>
+</body>
+<script>
+
+    var text=document.querySelector('#text');
+    var all=document.querySelector('#all');
+    var add=document.querySelector('#add');
+    var data_menu=document.querySelector('#data_menu');
+    var new_menu=document.querySelector('#new_menu');
+    var select=document.querySelector('#select');
+
+
+    //    存储数据  第一次没有aa这个数据，获取不到，就先用[]表示代替
+    var data=localStorage.getItem('aa')?JSON.parse(localStorage.getItem('aa')):[];
+
+    //   循环便利aa中的数据 把储存过的数据加载到text中
+    var str='';
+    for(var i=0;i<data.length;i++){
+        str+='<li class="list"><input type="checkbox" class="list_er"/>'+data[i]+'</li>'
+    }
+    data_menu.innerHTML=str;
+    text.value='';
+
+    //    先把数据添加到aa这个数组里面 把数据储存起来
+    add.addEventListener('click',function(){
+        var cont=text.value;
+        data.push(cont);
+        localStorage.setItem('aa',JSON.stringify(data));
+        str+='<li class="list"><input type="checkbox" class="list_er"/>'+cont+'</li>';
+        data_menu.innerHTML=str;
+        text.value='';
+    });
+
+    //    查看已选中的项
+    select.addEventListener('click',function(){
+//        全局变量无法获取动态加载的数据，此处需要获取加载过的选项
+        var inputs=document.querySelectorAll('.list_er');
+//        讲data循环便利，将被选中的项放入一个新的数组
+        var arr=[];
+        for(var j=0;j<data.length;j++){
+//            此处为将选中的项放入数组arr中
+            if(inputs[j].checked){
+                arr.push(data[j]);
+            }
+        }
+//        重新遍历数组arr,并放入到一个新的展示区中
+        var str='';
+        for(var k=0;k<arr.length;k++){
+            str+='<li><input type="checkbox"/>'+arr[k]+'</li>'
+        }
+        console.log(arr);
+        new_menu.innerHTML=str;
+//        将总的展示模块隐藏，显示新的展示模块
+        data_menu.style.display='none';
+        new_menu.style.display='block';
+    });
+
+    //    查看未选中的项（此处原理和查看已选中项相同）
+    no_select.addEventListener('click',function(){
+        var inputs=document.querySelectorAll('.list_er');
+        var arr=[];
+        for(var j=0;j<data.length;j++){
+            if(!inputs[j].checked){
+                arr.push(data[j]);
+            }
+        }
+        var str='';
+        for(var k=0;k<arr.length;k++){
+            str+='<li><input type="checkbox"/>'+arr[k]+'</li>'
+        }
+        console.log(arr);
+        new_menu.innerHTML=str;
+        data_menu.style.display='none';
+        new_menu.style.display='block';
+    })
+
+
+</script>
+</html>
